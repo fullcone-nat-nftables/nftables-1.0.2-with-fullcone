@@ -1,0 +1,7 @@
+table ip t {
+	chain c {
+		masquerade
+		drop
+		accept
+	}
+}

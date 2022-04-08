@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# Tests use of variables in jump statements
+
+set -e
+
+RULESET="table filter {
+ chain prerouting {
+  type filter hook prerouting priority -50
+ }
+}
+list  ruleset
+"
+
+exec $NFT -f - <<< "$RULESET"

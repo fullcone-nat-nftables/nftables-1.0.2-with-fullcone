@@ -1,0 +1,12 @@
+#!/bin/bash
+
+EXPECTED='table ip test_table {
+	chain test_chain {
+		comment "test"
+	}
+}
+'
+
+set -e
+
+$NFT -f - <<< "$EXPECTED"

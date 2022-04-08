@@ -1,0 +1,25 @@
+#!/bin/bash
+
+set -e
+
+RULESET="table ip x {
+	chain filter_in_tcp {
+	}
+	chain filter_in_udp {
+	}
+	chain y {
+		tcp dport vmap {
+			80 : accept,
+			81 : accept,
+			443 : accept,
+		}
+		tcp dport vmap {
+			8000-8100 : accept,
+			24000-25000 : accept,
+		}
+		meta l4proto tcp goto filter_in_tcp
+		meta l4proto udp goto filter_in_udp
+	}
+}"
+
+$NFT -o -f - <<< $RULESET

@@ -1,0 +1,27 @@
+table inet t {
+	map m1 {
+		typeof osf name : ct mark
+		elements = { "Linux" : 0x00000001 }
+	}
+
+	map m2 {
+		typeof vlan id : meta mark
+		elements = { 1 : 0x00000001, 4095 : 0x00004095 }
+	}
+
+	map m3 {
+		typeof ip saddr . ip daddr : meta mark
+		elements = { 1.2.3.4 . 5.6.7.8 : 0x00000001,
+			     2.3.4.5 . 6.7.8.9 : 0x00000002 }
+	}
+
+	map m4 {
+		typeof iifname . ip protocol . th dport : verdict
+	}
+
+	chain c {
+		ct mark set osf name map @m1
+		meta mark set vlan id map @m2
+		meta mark set ip saddr . ip daddr map @m3
+	}
+}

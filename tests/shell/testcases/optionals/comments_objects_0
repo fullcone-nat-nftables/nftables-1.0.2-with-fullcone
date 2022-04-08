@@ -1,0 +1,44 @@
+#!/bin/bash
+
+EXPECTED='table ip filter {
+	quota q {
+		over 1200 bytes
+		comment "test1"
+	}
+
+	counter c {
+		packets 0 bytes 0
+		comment "test2"
+	}
+
+	ct helper h {
+		type "sip" protocol tcp
+		l3proto ip
+		comment "test3"
+	}
+
+	ct expectation e {
+		protocol tcp
+		dport 666
+		timeout 100ms
+		size 96
+		l3proto ip
+		comment "test4"
+	}
+
+	limit l {
+		rate 400/hour
+		comment "test5"
+	}
+
+	synproxy s {
+		mss 1460
+		wscale 2
+		comment "test6"
+	}
+}
+'
+
+set -e
+
+$NFT -f - <<< "$EXPECTED"

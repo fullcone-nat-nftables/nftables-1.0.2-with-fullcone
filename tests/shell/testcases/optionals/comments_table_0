@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# comments are shown
+
+$NFT add table test { comment \"test_comment\"\; }

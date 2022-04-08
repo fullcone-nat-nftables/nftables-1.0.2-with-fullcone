@@ -1,0 +1,61 @@
+#!/bin/bash
+
+# list only the flowtable asked for with table
+
+FLOWTABLES="flowtable f {
+	hook ingress priority filter
+	devices = { lo }
+}
+flowtable f2 {
+	hook ingress priority filter
+	devices = { d0 }
+}"
+
+RULESET="table inet filter {
+	$FLOWTABLES
+}
+table ip filter {
+	$FLOWTABLES
+}"
+
+EXPECTED="table inet filter {
+	flowtable f {
+		hook ingress priority filter
+		devices = { lo }
+	}
+}"
+EXPECTED2="table ip filter {
+	flowtable f2 {
+		hook ingress priority filter
+		devices = { d0 }
+	}
+}"
+EXPECTED3="table ip filter {
+	flowtable f {
+		hook ingress priority filter
+		devices = { lo }
+	}
+	flowtable f2 {
+		hook ingress priority filter
+		devices = { d0 }
+	}
+}"
+
+ip link add d0 type dummy || {
+	echo "Skipping, no dummy interface available"
+	exit 0
+}
+trap "ip link del d0" EXIT
+
+set -e
+
+$NFT -f - <<< "$RULESET"
+
+GET="$($NFT list flowtable inet filter f)"
+$DIFF -u <(echo "$EXPECTED") <(echo "$GET")
+
+GET="$($NFT list flowtable ip filter f2)"
+$DIFF -u <(echo "$EXPECTED2") <(echo "$GET")
+
+GET="$($NFT list flowtables ip)"
+$DIFF -u <(echo "$EXPECTED3") <(echo "$GET")

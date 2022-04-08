@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -e
+
+RULESET="table ip x {
+	chain y {
+		ct state invalid drop
+		ct state established,related accept
+	}
+}"
+
+$NFT -o -f - <<< $RULESET

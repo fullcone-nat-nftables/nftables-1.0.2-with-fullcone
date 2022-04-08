@@ -1,0 +1,16 @@
+#!/bin/bash
+
+set -e
+
+EXPECTED="define BASE_ALLOWED_INCOMING_TCP_PORTS = {22, 80, 443}
+define EXTRA_ALLOWED_INCOMING_TCP_PORTS = {}
+
+table inet filter {
+	chain input {
+		type filter hook input priority 0; policy drop;
+		tcp dport {\$BASE_ALLOWED_INCOMING_TCP_PORTS, \$EXTRA_ALLOWED_INCOMING_TCP_PORTS} ct state new counter accept
+	}
+}
+"
+
+$NFT -f - <<< "$EXPECTED"

@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -e
+
+RULESET="table ip x {
+	chain y {
+		meta iifname eth1 ip saddr 1.1.1.1 ip daddr 2.2.2.3 accept
+		meta iifname eth1 ip saddr 1.1.1.2 ip daddr 2.2.2.4 accept
+		meta iifname eth2 ip saddr 1.1.1.3 ip daddr 2.2.2.5 accept
+	}
+}"
+
+$NFT -o -f - <<< $RULESET

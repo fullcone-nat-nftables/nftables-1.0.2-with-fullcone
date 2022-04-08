@@ -1,0 +1,12 @@
+#!/bin/bash
+
+$NFT flush ruleset
+$NFT add table ip test
+$NFT add chain ip test c
+$NFT add set ip test s { type ipv4_addr\; }
+$NFT add element ip test s { 192.168.3.4, 192.168.3.5 }
+
+if $NFT -j -t list ruleset | grep '192'
+then
+	exit 1
+fi

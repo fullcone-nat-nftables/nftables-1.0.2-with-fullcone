@@ -1,0 +1,44 @@
+#!/bin/bash
+
+set -e
+
+EXPECTED="table ip nat {
+       map ipportmap {
+                type ipv4_addr : interval ipv4_addr . inet_service
+                flags interval
+                elements = { 192.168.1.2 : 10.141.10.1-10.141.10.3 . 8888-8999 }
+       }
+       chain prerouting {
+                type nat hook prerouting priority dstnat; policy accept;
+                ip protocol tcp dnat ip to ip saddr map @ipportmap
+       }
+}"
+
+$NFT -f - <<< $EXPECTED
+$NFT add element ip nat ipportmap { 192.168.2.0/24 : 10.141.11.5-10.141.11.20 . 8888-8999 }
+
+EXPECTED="table ip nat {
+        map ipportmap2 {
+                type ipv4_addr . ipv4_addr : interval ipv4_addr . inet_service
+                flags interval
+                elements = { 192.168.1.2 . 192.168.2.2 : 127.0.0.1/8  . 42 - 43 }
+        }
+
+        chain prerouting {
+                type nat hook prerouting priority dstnat; policy accept;
+                ip protocol tcp dnat ip to ip saddr . ip daddr map @ipportmap2
+        }
+}"
+
+$NFT -f - <<< $EXPECTED
+
+EXPECTED="table ip nat {
+	map fwdtoip_th {
+		type ipv4_addr . inet_service : interval ipv4_addr . inet_service
+		flags interval
+		elements = { 1.2.3.4 . 10000-20000 : 192.168.3.4 . 30000-40000 }
+	}
+}"
+
+$NFT -f - <<< $EXPECTED
+$NFT add rule ip nat prerouting meta l4proto { tcp, udp } dnat to ip daddr . th dport map @fwdtoip_th

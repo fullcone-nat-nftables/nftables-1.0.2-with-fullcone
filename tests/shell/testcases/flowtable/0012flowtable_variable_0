@@ -1,0 +1,29 @@
+#!/bin/bash
+
+set -e
+
+ip link add name dummy1 type dummy
+
+EXPECTED="define if_main = { lo, dummy1 }
+
+table filter1 {
+	flowtable Main_ft1 {
+		hook ingress priority filter
+		counter
+		devices = \$if_main
+	}
+}"
+
+$NFT -f - <<< $EXPECTED
+
+EXPECTED="define if_main = \"lo\"
+
+table filter2 {
+	flowtable Main_ft2 {
+		hook ingress priority filter
+		counter
+		devices = { \$if_main, dummy1 }
+	}
+}"
+
+$NFT -f - <<< $EXPECTED

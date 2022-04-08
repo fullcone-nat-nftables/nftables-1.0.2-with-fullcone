@@ -1,0 +1,37 @@
+#!/bin/bash
+
+set -e
+
+ip link add name dummy0 type dummy
+
+EXPECTED="define if_main = \"lo\"
+
+table netdev filter1 {
+	chain Main_Ingress1 {
+		type filter hook ingress device \$if_main priority -500; policy accept;
+	}
+}"
+
+$NFT -f - <<< $EXPECTED
+
+EXPECTED="define if_main = \"lo\"
+
+table netdev filter2 {
+	chain Main_Ingress2 {
+		type filter hook ingress devices = { \$if_main, dummy0 } priority -500; policy accept;
+	}
+}"
+
+$NFT -f - <<< $EXPECTED
+
+EXPECTED="define if_main = { lo, dummy0 }
+
+table netdev filter3 {
+	chain Main_Ingress3 {
+		type filter hook ingress devices = \$if_main priority -500; policy accept;
+	}
+}"
+
+$NFT -f - <<< $EXPECTED
+
+

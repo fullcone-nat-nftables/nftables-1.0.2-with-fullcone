@@ -1,0 +1,6 @@
+table inet filter {
+	chain input {
+		type filter hook input priority filter; policy drop;
+		tcp dport { 22, 80, 443 } ct state new counter packets 0 bytes 0 accept
+	}
+}

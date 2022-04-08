@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -e
+
+RULESET="
+  add table t
+  add chain t c { type filter hook output priority mangle; }
+  add rule t c oif lo ct mark set (meta mark | 0x10) << 8
+"
+
+$NFT -f - <<< "$RULESET"

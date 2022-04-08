@@ -1,0 +1,24 @@
+#!/bin/bash
+
+set -e
+
+RULESET="table inet filter {
+	chain ingress {
+		type filter hook ingress device \"lo\" priority filter; policy accept;
+	}
+	chain input {
+		type filter hook input priority filter; policy accept;
+	}
+	chain forward {
+		type filter hook forward priority filter; policy accept;
+	}
+}"
+
+# Test auto-removal of chain hook on netns removal
+unshare -n bash -c "ip link add br0 type bridge; \
+ $NFT add table netdev test; \
+ $NFT add chain netdev test ingress { type filter hook ingress device \"br0\" priority 0\; policy drop\; } ; \
+" || exit 1
+
+$NFT -f - <<< "$RULESET" && exit 0
+exit 1

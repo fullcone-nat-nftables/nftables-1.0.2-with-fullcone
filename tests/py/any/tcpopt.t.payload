@@ -1,0 +1,190 @@
+# tcp option eol exists
+inet 
+  [ exthdr load tcpopt 1b @ 0 + 0 present => reg 1 ]
+  [ cmp eq reg 1 0x00000001 ]
+
+# tcp option nop exists
+inet 
+  [ exthdr load tcpopt 1b @ 1 + 0 present => reg 1 ]
+  [ cmp eq reg 1 0x00000001 ]
+
+# tcp option maxseg exists
+inet 
+  [ exthdr load tcpopt 1b @ 2 + 0 present => reg 1 ]
+  [ cmp eq reg 1 0x00000001 ]
+
+# tcp option maxseg length 1
+inet 
+  [ exthdr load tcpopt 1b @ 2 + 1 => reg 1 ]
+  [ cmp eq reg 1 0x00000001 ]
+
+# tcp option maxseg size 1
+inet 
+  [ exthdr load tcpopt 2b @ 2 + 2 => reg 1 ]
+  [ cmp eq reg 1 0x00000100 ]
+
+# tcp option window length 1
+inet 
+  [ exthdr load tcpopt 1b @ 3 + 1 => reg 1 ]
+  [ cmp eq reg 1 0x00000001 ]
+
+# tcp option window count 1
+inet 
+  [ exthdr load tcpopt 1b @ 3 + 2 => reg 1 ]
+  [ cmp eq reg 1 0x00000001 ]
+
+# tcp option sack-perm exists
+inet 
+  [ exthdr load tcpopt 1b @ 4 + 0 present => reg 1 ]
+  [ cmp eq reg 1 0x00000001 ]
+
+# tcp option sack-perm length 1
+inet 
+  [ exthdr load tcpopt 1b @ 4 + 1 => reg 1 ]
+  [ cmp eq reg 1 0x00000001 ]
+
+# tcp option sack exists
+inet 
+  [ exthdr load tcpopt 1b @ 5 + 0 present => reg 1 ]
+  [ cmp eq reg 1 0x00000001 ]
+
+# tcp option sack length 1
+inet 
+  [ exthdr load tcpopt 1b @ 5 + 1 => reg 1 ]
+  [ cmp eq reg 1 0x00000001 ]
+
+# tcp option sack left 1
+inet 
+  [ exthdr load tcpopt 4b @ 5 + 2 => reg 1 ]
+  [ cmp eq reg 1 0x01000000 ]
+
+# tcp option sack0 left 1
+inet 
+  [ exthdr load tcpopt 4b @ 5 + 2 => reg 1 ]
+  [ cmp eq reg 1 0x01000000 ]
+
+# tcp option sack1 left 1
+inet 
+  [ exthdr load tcpopt 4b @ 5 + 10 => reg 1 ]
+  [ cmp eq reg 1 0x01000000 ]
+
+# tcp option sack2 left 1
+inet 
+  [ exthdr load tcpopt 4b @ 5 + 18 => reg 1 ]
+  [ cmp eq reg 1 0x01000000 ]
+
+# tcp option sack3 left 1
+inet 
+  [ exthdr load tcpopt 4b @ 5 + 26 => reg 1 ]
+  [ cmp eq reg 1 0x01000000 ]
+
+# tcp option sack right 1
+inet 
+  [ exthdr load tcpopt 4b @ 5 + 6 => reg 1 ]
+  [ cmp eq reg 1 0x01000000 ]
+
+# tcp option sack0 right 1
+inet 
+  [ exthdr load tcpopt 4b @ 5 + 6 => reg 1 ]
+  [ cmp eq reg 1 0x01000000 ]
+
+# tcp option sack1 right 1
+inet 
+  [ exthdr load tcpopt 4b @ 5 + 14 => reg 1 ]
+  [ cmp eq reg 1 0x01000000 ]
+
+# tcp option sack2 right 1
+inet 
+  [ exthdr load tcpopt 4b @ 5 + 22 => reg 1 ]
+  [ cmp eq reg 1 0x01000000 ]
+
+# tcp option sack3 right 1
+inet 
+  [ exthdr load tcpopt 4b @ 5 + 30 => reg 1 ]
+  [ cmp eq reg 1 0x01000000 ]
+
+# tcp option timestamp exists
+inet 
+  [ exthdr load tcpopt 1b @ 8 + 0 present => reg 1 ]
+  [ cmp eq reg 1 0x00000001 ]
+
+# tcp option timestamp length 1
+inet 
+  [ exthdr load tcpopt 1b @ 8 + 1 => reg 1 ]
+  [ cmp eq reg 1 0x00000001 ]
+
+# tcp option timestamp tsval 1
+inet 
+  [ exthdr load tcpopt 4b @ 8 + 2 => reg 1 ]
+  [ cmp eq reg 1 0x01000000 ]
+
+# tcp option timestamp tsecr 1
+inet 
+  [ exthdr load tcpopt 4b @ 8 + 6 => reg 1 ]
+  [ cmp eq reg 1 0x01000000 ]
+
+# tcp option 255 missing
+inet
+  [ exthdr load tcpopt 1b @ 255 + 0 present => reg 1 ]
+  [ cmp eq reg 1 0x00000000 ]
+
+# tcp option 6 exists
+inet
+  [ exthdr load tcpopt 1b @ 6 + 0 present => reg 1 ]
+  [ cmp eq reg 1 0x00000001 ]
+
+# tcp option @255,8,8 255
+inet
+  [ exthdr load tcpopt 1b @ 255 + 1 => reg 1 ]
+  [ cmp eq reg 1 0x000000ff ]
+
+# tcp option window exists
+inet 
+  [ exthdr load tcpopt 1b @ 3 + 0 present => reg 1 ]
+  [ cmp eq reg 1 0x00000001 ]
+
+# tcp option window missing
+inet 
+  [ exthdr load tcpopt 1b @ 3 + 0 present => reg 1 ]
+  [ cmp eq reg 1 0x00000000 ]
+
+# tcp option maxseg size set 1360
+inet 
+  [ immediate reg 1 0x00005005 ]
+  [ exthdr write tcpopt reg 1 => 2b @ 2 + 2 ]
+
+# tcp option md5sig exists
+inet
+  [ exthdr load tcpopt 1b @ 19 + 0 present => reg 1 ]
+  [ cmp eq reg 1 0x00000001 ]
+
+# tcp option fastopen exists
+inet
+  [ exthdr load tcpopt 1b @ 34 + 0 present => reg 1 ]
+  [ cmp eq reg 1 0x00000001 ]
+
+# tcp option mptcp exists
+inet
+  [ exthdr load tcpopt 1b @ 30 + 0 present => reg 1 ]
+  [ cmp eq reg 1 0x00000001 ]
+
+# tcp option mptcp subtype 0
+inet
+  [ exthdr load tcpopt 1b @ 30 + 2 => reg 1 ]
+  [ bitwise reg 1 = ( reg 1 & 0x000000f0 ) ^ 0x00000000 ]
+  [ cmp eq reg 1 0x00000000 ]
+
+# tcp option mptcp subtype 1
+inet
+  [ exthdr load tcpopt 1b @ 30 + 2 => reg 1 ]
+  [ bitwise reg 1 = ( reg 1 & 0x000000f0 ) ^ 0x00000000 ]
+  [ cmp eq reg 1 0x00000010 ]
+
+# tcp option mptcp subtype { 0, 2}
+__set%d test-inet 3 size 2
+__set%d test-inet 0
+	element 00000000  : 0 [end]	element 00000020  : 0 [end]
+inet
+  [ exthdr load tcpopt 1b @ 30 + 2 => reg 1 ]
+  [ bitwise reg 1 = ( reg 1 & 0x000000f0 ) ^ 0x00000000 ]
+  [ lookup reg 1 set __set%d ]
