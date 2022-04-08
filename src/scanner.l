@@ -409,6 +409,7 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
 "snat"			{ return SNAT; }
 "dnat"			{ return DNAT; }
 "masquerade"		{ return MASQUERADE; }
+"fullcone"		{ return FULLCONE; }
 "redirect"		{ return REDIRECT; }
 "random"		{ return RANDOM; }
 "fully-random"		{ return FULLY_RANDOM; }

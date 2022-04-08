@@ -1140,6 +1140,13 @@ static void netlink_gen_nat_stmt(struct netlink_linearize_ctx *ctx,
 		nftnl_reg_pmin = NFTNL_EXPR_MASQ_REG_PROTO_MIN;
 		nftnl_reg_pmax = NFTNL_EXPR_MASQ_REG_PROTO_MAX;
 		break;
+	case NFT_NAT_FULLCONE:
+		nle = alloc_nft_expr("fullcone");
+
+		nftnl_flag_attr = NFTNL_EXPR_FULLCONE_FLAGS;
+		nftnl_reg_pmin = NFTNL_EXPR_FULLCONE_REG_PROTO_MIN;
+		nftnl_reg_pmax = NFTNL_EXPR_FULLCONE_REG_PROTO_MAX;
+		break;
 	case NFT_NAT_REDIR:
 		nle = alloc_nft_expr("redir");
 

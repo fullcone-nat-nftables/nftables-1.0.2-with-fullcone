@@ -1365,6 +1365,53 @@ out_err:
 	stmt_free(stmt);
 }
 
+static void netlink_parse_fullcone(struct netlink_parse_ctx *ctx,
+			       const struct location *loc,
+			       const struct nftnl_expr *nle)
+{
+	enum nft_registers reg1, reg2;
+	struct expr *proto;
+	struct stmt *stmt;
+	uint32_t flags = 0;
+
+	if (nftnl_expr_is_set(nle, NFTNL_EXPR_FULLCONE_FLAGS))
+		flags = nftnl_expr_get_u32(nle, NFTNL_EXPR_FULLCONE_FLAGS);
+
+	stmt = nat_stmt_alloc(loc, NFT_NAT_FULLCONE);
+	stmt->nat.flags = flags;
+
+	reg1 = netlink_parse_register(nle, NFTNL_EXPR_FULLCONE_REG_PROTO_MIN);
+	if (reg1) {
+		proto = netlink_get_register(ctx, loc, reg1);
+		if (proto == NULL) {
+			netlink_error(ctx, loc,
+				      "fullcone statement has no proto expression");
+			goto out_err;
+		}
+		expr_set_type(proto, &inet_service_type, BYTEORDER_BIG_ENDIAN);
+		stmt->nat.proto = proto;
+	}
+
+	reg2 = netlink_parse_register(nle, NFTNL_EXPR_FULLCONE_REG_PROTO_MAX);
+	if (reg2 && reg2 != reg1) {
+		proto = netlink_get_register(ctx, loc, reg2);
+		if (proto == NULL) {
+			netlink_error(ctx, loc,
+				      "fullcone statement has no proto expression");
+			goto out_err;
+		}
+		expr_set_type(proto, &inet_service_type, BYTEORDER_BIG_ENDIAN);
+		if (stmt->nat.proto != NULL)
+			proto = range_expr_alloc(loc, stmt->nat.proto, proto);
+		stmt->nat.proto = proto;
+	}
+
+	ctx->stmt = stmt;
+	return;
+out_err:
+	stmt_free(stmt);
+}
+
 static void netlink_parse_redir(struct netlink_parse_ctx *ctx,
 				const struct location *loc,
 				const struct nftnl_expr *nle)
@@ -1783,6 +1830,7 @@ static const struct expr_handler netlink_parsers[] = {
 	{ .name = "tproxy",	.parse = netlink_parse_tproxy },
 	{ .name = "notrack",	.parse = netlink_parse_notrack },
 	{ .name = "masq",	.parse = netlink_parse_masq },
+	{ .name = "fullcone",	.parse = netlink_parse_fullcone },
 	{ .name = "redir",	.parse = netlink_parse_redir },
 	{ .name = "dup",	.parse = netlink_parse_dup },
 	{ .name = "queue",	.parse = netlink_parse_queue },

@@ -649,6 +649,7 @@ const char *nat_etype2str(enum nft_nat_etypes type)
 		[NFT_NAT_SNAT]	= "snat",
 		[NFT_NAT_DNAT]	= "dnat",
 		[NFT_NAT_MASQ]	= "masquerade",
+		[NFT_NAT_FULLCONE] = "fullcone",
 		[NFT_NAT_REDIR]	= "redirect",
 	};
 

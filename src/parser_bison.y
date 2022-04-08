@@ -571,6 +571,7 @@ int nft_lex(void *, void *, void *);
 %token SNAT			"snat"
 %token DNAT			"dnat"
 %token MASQUERADE		"masquerade"
+%token FULLCONE		"fullcone"
 %token REDIRECT			"redirect"
 %token RANDOM			"random"
 %token FULLY_RANDOM		"fully-random"
@@ -703,8 +704,8 @@ int nft_lex(void *, void *, void *);
 %type <val>			limit_burst_pkts limit_burst_bytes limit_mode limit_bytes time_unit quota_mode
 %type <stmt>			reject_stmt reject_stmt_alloc
 %destructor { stmt_free($$); }	reject_stmt reject_stmt_alloc
-%type <stmt>			nat_stmt nat_stmt_alloc masq_stmt masq_stmt_alloc redir_stmt redir_stmt_alloc
-%destructor { stmt_free($$); }	nat_stmt nat_stmt_alloc masq_stmt masq_stmt_alloc redir_stmt redir_stmt_alloc
+%type <stmt>			nat_stmt nat_stmt_alloc masq_stmt masq_stmt_alloc fullcone_stmt fullcone_stmt_alloc redir_stmt redir_stmt_alloc
+%destructor { stmt_free($$); }	nat_stmt nat_stmt_alloc masq_stmt masq_stmt_alloc fullcone_stmt fullcone_stmt_alloc redir_stmt redir_stmt_alloc
 %type <val>			nf_nat_flags nf_nat_flag offset_opt
 %type <stmt>			tproxy_stmt
 %destructor { stmt_free($$); }	tproxy_stmt
@@ -2821,6 +2822,7 @@ stmt			:	verdict_stmt
 			|	queue_stmt
 			|	ct_stmt
 			|	masq_stmt
+			|	fullcone_stmt
 			|	redir_stmt
 			|	dup_stmt
 			|	fwd_stmt
@@ -3706,6 +3708,28 @@ masq_stmt_alloc		:	MASQUERADE	{ $$ = nat_stmt_alloc(&@$, NFT_NAT_MASQ); }
 			;
 
 masq_stmt_args		:	TO 	COLON	stmt_expr
+			{
+				$<stmt>0->nat.proto = $3;
+			}
+			|	TO 	COLON	stmt_expr	nf_nat_flags
+			{
+				$<stmt>0->nat.proto = $3;
+				$<stmt>0->nat.flags = $4;
+			}
+			|	nf_nat_flags
+			{
+				$<stmt>0->nat.flags = $1;
+			}
+			;
+
+fullcone_stmt		:	fullcone_stmt_alloc		fullcone_stmt_args
+			|	fullcone_stmt_alloc
+			;
+
+fullcone_stmt_alloc		:	FULLCONE	{ $$ = nat_stmt_alloc(&@$, NFT_NAT_FULLCONE); }
+			;
+
+fullcone_stmt_args		:	TO 	COLON	stmt_expr
 			{
 				$<stmt>0->nat.proto = $3;
 			}

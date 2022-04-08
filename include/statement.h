@@ -122,6 +122,7 @@ enum nft_nat_etypes {
 	__NFT_NAT_SNAT = NFT_NAT_SNAT,
 	__NFT_NAT_DNAT = NFT_NAT_DNAT,
 	NFT_NAT_MASQ,
+	NFT_NAT_FULLCONE,
 	NFT_NAT_REDIR,
 };
 

@@ -1410,6 +1410,22 @@ enum nft_masq_attributes {
 #define NFTA_MASQ_MAX		(__NFTA_MASQ_MAX - 1)
 
 /**
+ * enum nft_fullcone_attributes - nf_tables fullcone expression attributes
+ *
+ * @NFTA_FULLCONE_FLAGS: NAT flags (see NF_NAT_RANGE_* in linux/netfilter/nf_nat.h) (NLA_U32)
+ * @NFTA_FULLCONE_REG_PROTO_MIN: source register of proto range start (NLA_U32: nft_registers)
+ * @NFTA_FULLCONE_REG_PROTO_MAX: source register of proto range end (NLA_U32: nft_registers)
+ */
+enum nft_fullcone_attributes {
+	NFTA_FULLCONE_UNSPEC,
+	NFTA_FULLCONE_FLAGS,
+	NFTA_FULLCONE_REG_PROTO_MIN,
+	NFTA_FULLCONE_REG_PROTO_MAX,
+	__NFTA_FULLCONE_MAX
+};
+#define NFTA_FULLCONE_MAX		(__NFTA_FULLCONE_MAX - 1)
+
+/**
  * enum nft_redir_attributes - nf_tables redirect expression netlink attributes
  *
  * @NFTA_REDIR_REG_PROTO_MIN: source register of proto range start (NLA_U32: nft_registers)
